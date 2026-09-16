@@ -17,14 +17,14 @@ mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@fatherapp.b78k02d.mongodb.net/?retryWrites=true&w=majority&appName=FatherApp`
   )
-  .then(console.log("MongoDB Connected Successfully!"))
+  .then(() => console.log("MongoDB Connected Successfully!"))
   .catch((error) => console.log("Error connecting to MongoDB", error));
 
 // jwt authentication
 app.post("/jwt", async (req, res) => {
   const user = req.body;
   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1hr",
+    expiresIn: "1h",
   });
   res.send({ token });
 });
@@ -35,13 +35,14 @@ const cartRoutes = require("./api/routes/cartRoutes");
 const userRoutes = require("./api/routes/userRoutes");
 const paymentRoutes = require("./api/routes/paymentRoutes");
 const refundRoutes = require("./api/routes/refundRoutes");
+const verifyToken = require("./api/middleware/verifyToken");
 app.use("/menu", menuRoutes);
 app.use("/carts", cartRoutes);
 app.use("/users", userRoutes);
 app.use("/payments", paymentRoutes);
 app.use("/refund", refundRoutes);
 
-app.post("/create-payment-intent", async (req, res) => {
+app.post("/create-payment-intent", verifyToken, async (req, res) => {
   const { price } = req.body;
   const amount = Math.round(parseFloat(price) * 100);
 

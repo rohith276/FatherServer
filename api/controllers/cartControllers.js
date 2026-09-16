@@ -42,7 +42,7 @@ const deleteCart =  async (req, res) => {
     try {
         const deletedCart = await Carts.findByIdAndDelete(cartId);
         if(!deletedCart){
-            return res.status(401).json({message: "Cart Items not found!"})
+            return res.status(404).json({message: "Cart Items not found!"})
         }
         res.status(200).json({message: "Cart Item Deleted Successfully!"})
         

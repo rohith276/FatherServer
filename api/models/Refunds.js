@@ -10,11 +10,7 @@ const refundSchema = new Schema({
     itemName:Array,
     cartItems: Array,
     menuItems: Array,
-    createAt: {
-        type: Date,
-        default:Date.now
-    }
-})
+}, { timestamps: true })
 
 // create model
 const Refund  = mongoose.model('Refund', refundSchema);

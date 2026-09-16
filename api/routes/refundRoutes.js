@@ -18,11 +18,19 @@ router.get('/',verifyToken, async (req, res) => {
     }
 });
 
-// POST route to submit refund requests (already implemented)
+// POST route to submit refund requests
 router.post('/', verifyToken, async (req, res) => {
     try {
         const { transactionId } = req.body;
-        res.status(200).json({ message: "Refund request submitted successfully" });
+        if (!transactionId) {
+            return res.status(400).json({ message: "Transaction ID is required" });
+        }
+        const refund = await Refund.create({
+            transactionId,
+            email: req.decoded.email,
+            status: "pending"
+        });
+        res.status(200).json({ message: "Refund request submitted successfully", data: refund });
     } catch (error) {
         console.error("Error submitting refund request:", error);
         res.status(500).json({ message: "Failed to submit refund request. Please try again later." });
